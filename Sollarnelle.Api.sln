@@ -15,13 +15,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarnelle.Infrastructure",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Crosscutting", "Crosscutting", "{96230E98-F912-4D10-A492-4CE949863CBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarnelle.IoC", "src\Crosscutting\Solarnelle.IoC\Solarnelle.IoC.csproj", "{058B9D9A-F1EE-4FBE-8477-61DE2FAA3C8D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarnelle.Configuration", "src\Crosscutting\Solarnelle.Configuration\Solarnelle.Configuration.csproj", "{B7B3A4AB-F4F7-4AA3-A822-0F60456B849F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solarnelle.IoC", "src\Crosscutting\Solarnelle.IoC\Solarnelle.IoC.csproj", "{058B9D9A-F1EE-4FBE-8477-61DE2FAA3C8D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BE04A670-F562-432D-8829-2198F8AEEF96}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Global
