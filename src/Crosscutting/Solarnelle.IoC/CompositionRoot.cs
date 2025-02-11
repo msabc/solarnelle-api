@@ -2,8 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Solarnelle.Application.Services.Auth;
+using Solarnelle.Application.Services.SolarPowerPlant;
 using Solarnelle.Configuration;
+using Solarnelle.Domain.Interfaces.DatabaseContext;
+using Solarnelle.Domain.Interfaces.Repositories;
 using Solarnelle.Infrastructure.DatabaseContext;
+using Solarnelle.Infrastructure.Repositories;
 
 namespace Solarnelle.IoC
 {
@@ -12,7 +17,10 @@ namespace Solarnelle.IoC
         public static IServiceCollection RegisterApplicationDependencies(this IServiceCollection services, IConfiguration configuration)
         {
             services.RegisterSettings(configuration)
-                    .RegisterDbContext();
+                    .RegisterDatabaseConfiguration()
+                    .RegisterDbContext()
+                    .RegisterRepositories()
+                    .RegisterApplicationServices();
 
             return services;
         }
@@ -20,27 +28,46 @@ namespace Solarnelle.IoC
         private static IServiceCollection RegisterSettings(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<DatabaseSettings>(options => configuration.GetSection(nameof(DatabaseSettings)).Bind(options));
+            services.Configure<SolarnelleSettings>(options => configuration.GetSection(nameof(SolarnelleSettings)).Bind(options));
+
+            return services;
+        }
+
+        private static IServiceCollection RegisterDatabaseConfiguration(this IServiceCollection services)
+        {
+            ServiceProvider serviceProvider = services.BuildServiceProvider();
+
+            using IServiceScope scope = serviceProvider.CreateScope();
+
+            var databaseSettings = scope.ServiceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value;
+
+            services.AddDbContext<SolarnelleDbContext>(options =>
+            {
+                options.UseSqlServer(databaseSettings.SolarnelleConnectionString);
+            });
 
             return services;
         }
 
         private static IServiceCollection RegisterDbContext(this IServiceCollection services)
         {
-            ServiceProvider serviceProvider = services.BuildServiceProvider();
+            services.AddScoped<ISolarnelleDbContext, SolarnelleDbContext>();
 
-            using IServiceScope scope = serviceProvider.CreateScope();
+            return services;
+        }
 
-            var databaseOptions = scope.ServiceProvider.GetService<IOptions<DatabaseSettings>>();
+        private static IServiceCollection RegisterRepositories(this IServiceCollection services)
+        {
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ISolarPowerPlantRepository, SolarPowerPlantRepository>();
 
-            if (databaseOptions is null)
-                throw new Exception($"Unable to start the application due to missing {nameof(DatabaseSettings)}.");
-            
-            var databaseSettings = databaseOptions.Value;
+            return services;
+        }
 
-            services.AddDbContext<SolarnelleDbContext>(options =>
-            {
-                options.UseSqlServer(databaseSettings.SolarnelleConnectionString);
-            });
+        private static IServiceCollection RegisterApplicationServices(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ISolarPowerPlantService, SolarPowerPlantService>();
 
             return services;
         }

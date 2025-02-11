@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Crosscutting\Solarnelle.Configuration\Solarnelle.Configuration.csproj" />
+    <ProjectReference Include="..\Solarnelle.Domain\Solarnelle.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
