@@ -1,4 +1,4 @@
-﻿namespace Solarnelle.Domain.Models.Commands
+﻿namespace Solarnelle.Domain.Models.Commands.SolarPowerPlant
 {
     public class FilterSolarPowerPlantCommand
     {

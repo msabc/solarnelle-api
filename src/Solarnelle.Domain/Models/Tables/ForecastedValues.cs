@@ -8,10 +8,6 @@
 
         public DateTime CreatedDate { get; set; }
 
-        public decimal Output { get; set; }
-
-        public int GranularityId { get; set; }
-
-        public required ForecastGranularity Granularity { get; set; }
+        public decimal PowerOutput { get; set; }
     }
 }

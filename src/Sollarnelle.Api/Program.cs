@@ -1,8 +1,11 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Solarnelle.Api.OpenAPI;
+using Solarnelle.Application.Constants;
+using Solarnelle.Application.Security;
 using Solarnelle.Configuration;
 using Solarnelle.Infrastructure.DatabaseContext;
 using Solarnelle.IoC;
@@ -23,6 +26,7 @@ builder.Services.AddOpenApi(options =>
 
 builder.Services.RegisterApplicationDependencies(builder.Configuration);
 
+// Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -44,6 +48,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Authorization
+builder.Services.AddSingleton<IAuthorizationHandler, SolarnelleAuthorizationHandler>();
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy(SecurityPolicies.SolarnelleUserIdPolicyName, policy => policy.RequireClaim(SecurityClaims.SolarnelleClaimsPrincipalType));
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -52,7 +62,6 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.EnsureCreated();
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

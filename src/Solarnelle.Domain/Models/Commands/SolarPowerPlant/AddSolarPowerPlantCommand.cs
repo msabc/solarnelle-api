@@ -1,8 +1,10 @@
-﻿namespace Solarnelle.Domain.Models.Commands
+﻿namespace Solarnelle.Domain.Models.Commands.SolarPowerPlant
 {
     public class AddSolarPowerPlantCommand
     {
         public string? Name { get; set; }
+
+        public decimal InstalledPower { get; set; }
 
         public DateTime DateOfInstallation { get; set; }
 

@@ -2,7 +2,7 @@
 using Solarnelle.Domain.Exceptions;
 using Solarnelle.Domain.Interfaces.DatabaseContext;
 using Solarnelle.Domain.Interfaces.Repositories;
-using Solarnelle.Domain.Models.Commands;
+using Solarnelle.Domain.Models.Commands.SolarPowerPlant;
 using Solarnelle.Domain.Models.Tables;
 
 namespace Solarnelle.Infrastructure.Repositories
@@ -17,6 +17,7 @@ namespace Solarnelle.Infrastructure.Repositories
                 LastModifiedUserId = command.UserId,
                 DateCreated = DateTime.UtcNow,
                 DateLastModified = DateTime.UtcNow,
+                InstalledPower = command.InstalledPower,
                 DateOfInstallation = command.DateOfInstallation,
                 Latitude = command.Latitude,
                 Longitude = command.Longitude,

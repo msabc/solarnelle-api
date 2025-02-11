@@ -13,8 +13,6 @@ namespace Solarnelle.Domain.Interfaces.DatabaseContext
 
         DbSet<ForecastedValues> ForecastedValues { get; set; }
 
-        DbSet<ForecastGranularity> ForecastGranularities { get; set; }
-
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken());
     }
 }

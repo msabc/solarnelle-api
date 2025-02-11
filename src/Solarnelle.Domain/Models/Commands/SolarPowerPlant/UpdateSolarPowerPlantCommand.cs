@@ -1,9 +1,7 @@
-﻿namespace Solarnelle.Application.Models.Dto
+﻿namespace Solarnelle.Domain.Models.Commands.SolarPowerPlant
 {
-    public class GetSolarPowerPlantResponseDto
+    public class UpdateSolarPowerPlantCommand
     {
-        public Guid Id { get; set; }
-
         public string? Name { get; set; }
 
         public DateTime DateOfInstallation { get; set; }
@@ -11,5 +9,7 @@
         public decimal Latitude { get; set; }
 
         public decimal Longitude { get; set; }
+
+        public Guid UserId { get; set; }
     }
 }

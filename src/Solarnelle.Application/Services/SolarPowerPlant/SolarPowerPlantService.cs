@@ -4,7 +4,7 @@ using Solarnelle.Application.Models.Request.SolarPowerPlant;
 using Solarnelle.Application.Models.Response.SolarPowerPlant;
 using Solarnelle.Domain.Exceptions;
 using Solarnelle.Domain.Interfaces.Repositories;
-using Solarnelle.Domain.Models.Commands;
+using Solarnelle.Domain.Models.Commands.SolarPowerPlant;
 
 namespace Solarnelle.Application.Services.SolarPowerPlant
 {

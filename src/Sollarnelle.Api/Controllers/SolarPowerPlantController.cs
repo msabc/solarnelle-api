@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Solarnelle.Api.Controllers.Base;
+using Solarnelle.Application.Constants;
 using Solarnelle.Application.Models.Request.SolarPowerPlant;
 using Solarnelle.Application.Services.Security;
 using Solarnelle.Application.Services.SolarPowerPlant;
@@ -7,6 +9,7 @@ using Solarnelle.Application.Services.SolarPowerPlant;
 namespace Solarnelle.Api.Controllers
 {
     [Route("power-plant")]
+    [Authorize(Policy = SecurityPolicies.SolarnelleUserIdPolicyName)]
     public class SolarPowerPlantController(
         ICurrentUserService currentUserService, 
         ISolarPowerPlantService solarPowerPlantService) : SolarnelleBaseController
@@ -22,12 +25,14 @@ namespace Solarnelle.Api.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAsync([FromQuery] GetSolarPowerPlantsRequest request)
         {
             return Ok(await solarPowerPlantService.GetAsync(request));
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByIdAsync([FromQuery] Guid id)
         {
             var response = await solarPowerPlantService.GetByIdAsync(id);

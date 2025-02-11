@@ -1,4 +1,4 @@
-﻿using Solarnelle.Domain.Models.Commands;
+﻿using Solarnelle.Domain.Models.Commands.SolarPowerPlant;
 using Solarnelle.Domain.Models.Tables;
 
 namespace Solarnelle.Domain.Interfaces.Repositories

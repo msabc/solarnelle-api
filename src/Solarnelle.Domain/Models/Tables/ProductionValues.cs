@@ -6,10 +6,8 @@
 
         public Guid SolarPowerPlantId { get; set; }
 
-        public required SolarPowerPlant SolarPowerPlant { get; set; }
-
         public DateTime MeasuredDate { get; set; }
 
-        public decimal Output { get; set; }
+        public decimal PowerOutput { get; set; }
     }
 }

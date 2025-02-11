@@ -60,6 +60,8 @@ namespace Solarnelle.IoC
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISolarPowerPlantRepository, SolarPowerPlantRepository>();
+            services.AddScoped<IForecastedValuesRepository, ForecastedValuesRepository>();
+            services.AddScoped<IProductionValuesRepository, ProductionValuesRepository>();
 
             return services;
         }

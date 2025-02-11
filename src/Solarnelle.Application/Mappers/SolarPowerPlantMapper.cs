@@ -1,7 +1,7 @@
-﻿using Solarnelle.Application.Models.Dto;
+﻿using Solarnelle.Application.Models.Dto.SolarPowerPlant;
 using Solarnelle.Application.Models.Request.SolarPowerPlant;
 using Solarnelle.Application.Models.Response.SolarPowerPlant;
-using Solarnelle.Domain.Models.Commands;
+using Solarnelle.Domain.Models.Commands.SolarPowerPlant;
 using Solarnelle.Domain.Models.Tables;
 
 namespace Solarnelle.Application.Mappers

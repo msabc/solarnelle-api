@@ -6,6 +6,8 @@
 
         public string? Name { get; set; }
 
+        public decimal InstalledPower { get; set; }
+
         public DateTime DateOfInstallation { get; set; }
 
         public decimal Latitude { get; set; }
