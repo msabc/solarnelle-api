@@ -26,12 +26,6 @@ namespace Solarnelle.Infrastructure.DatabaseContext
                 .HasDefaultValue(true);
 
             modelBuilder.Entity<SolarPowerPlant>()
-                .HasOne<User>()
-                .WithMany()
-                .HasForeignKey(spp => spp.CreatedByUserId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<SolarPowerPlant>()
                 .ToTable(spp => spp.HasCheckConstraint("CK_SolarPowerPlant_Latitude", "Latitude >= -90 AND Latitude <= 90"));
 
             modelBuilder.Entity<SolarPowerPlant>()

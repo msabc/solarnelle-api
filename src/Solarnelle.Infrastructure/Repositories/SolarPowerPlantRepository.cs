@@ -13,7 +13,6 @@ namespace Solarnelle.Infrastructure.Repositories
         {
             SolarPowerPlant solarPowerPlant = new()
             {
-                CreatedByUserId = command.UserId,
                 LastModifiedUserId = command.UserId,
                 DateCreated = DateTime.UtcNow,
                 DateLastModified = DateTime.UtcNow,
@@ -45,9 +44,6 @@ namespace Solarnelle.Infrastructure.Repositories
 
             if (!string.IsNullOrWhiteSpace(command.Name))
                 solarPowerPlants = solarPowerPlants.Where(s => !string.IsNullOrWhiteSpace(s.Name) && s.Name.Contains(command.Name));
-
-            if (command.CreatedByUserId.HasValue)
-                solarPowerPlants = solarPowerPlants.Where(s => s.CreatedByUserId == command.CreatedByUserId);
 
             if (command.DateOfInstallation.HasValue)
             {

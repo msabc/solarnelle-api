@@ -26,8 +26,7 @@ namespace Solarnelle.Application.Mappers
                 Name = request.Name,
                 DateOfInstallation = request.DateOfInstallation,
                 Latitude = request.Latitude,
-                Longitude = request.Longitude,
-                CreatedByUserId = request.CreatedByUserId
+                Longitude = request.Longitude
             };
         }
 

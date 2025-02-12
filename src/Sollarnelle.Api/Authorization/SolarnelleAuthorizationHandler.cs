@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Solarnelle.Application.Constants;
 
-namespace Solarnelle.Application.Security
+namespace Solarnelle.Api.Authorization
 {
     public class SolarnelleAuthorizationHandler : AuthorizationHandler<IAuthorizationRequirement>
     {

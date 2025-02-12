@@ -5,10 +5,10 @@ using Microsoft.IdentityModel.Tokens;
 using NLog;
 using NLog.Web;
 using Scalar.AspNetCore;
+using Solarnelle.Api.Authorization;
 using Solarnelle.Api.Filters;
 using Solarnelle.Api.OpenAPI;
 using Solarnelle.Application.Constants;
-using Solarnelle.Application.Security;
 using Solarnelle.Configuration;
 using Solarnelle.Infrastructure.DatabaseContext;
 using Solarnelle.IoC;
@@ -46,15 +46,15 @@ try
     })
     .AddJwtBearer(options =>
     {
-        string? securityToken = builder.Configuration["SolarnelleSettings:SecurityToken"];
+        string? signingKey = builder.Configuration["SolarnelleSettings:IssuerSigningKey"];
 
-        if (string.IsNullOrWhiteSpace(securityToken))
-            throw new Exception($"Missing required application setting {nameof(SolarnelleSettings.SecurityToken)}.");
+        if (string.IsNullOrWhiteSpace(signingKey))
+            throw new Exception($"Missing required application setting {nameof(SolarnelleSettings.IssuerSigningKey)}.");
 
         options.TokenValidationParameters = new TokenValidationParameters()
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityToken)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey)),
             ValidateIssuer = false,
             ValidateAudience = false
         };
