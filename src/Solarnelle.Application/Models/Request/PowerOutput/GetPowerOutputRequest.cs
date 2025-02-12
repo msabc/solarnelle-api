@@ -1,15 +1,13 @@
-﻿using Solarnelle.Application.Models.Enums;
-
-namespace Solarnelle.Application.Models.Request.PowerOutput
+﻿namespace Solarnelle.Application.Models.Request.PowerOutput
 {
     public record GetPowerOutputRequest
     {
-        public TimeseriesType Type { get; set; }
+        public required string TimeseriesType { get; set; }
 
-        public TimeseriesGranularity Granularity { get; set; }
+        public required string Granularity { get; set; }
 
-        public DateTime DateFrom { get; set; }
+        public required DateTime DateFrom { get; set; }
 
-        public DateTime DateTo { get; set; }
+        public required DateTime DateTo { get; set; }
     }
 }

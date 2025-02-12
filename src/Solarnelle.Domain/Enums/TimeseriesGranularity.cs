@@ -1,4 +1,4 @@
-﻿namespace Solarnelle.Application.Models.Enums
+﻿namespace Solarnelle.Domain.Enums
 {
     public enum TimeseriesGranularity
     {
