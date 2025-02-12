@@ -14,7 +14,7 @@ using Solarnelle.Domain.Models.Tables;
 
 namespace Solarnelle.Application.Services.Auth
 {
-    public class AuthService(IUserRepository userRepository, IOptions<SolarnelleSettings> solarnelleOptions) : IAuthService
+    public class AuthService(IUserRepository userRepository) : IAuthService
     {
         public async Task<string> SignUpAsync(SignUpRequest request)
         {

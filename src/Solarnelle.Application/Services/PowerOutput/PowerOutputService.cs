@@ -1,14 +1,15 @@
 ﻿using Solarnelle.Application.Mappers;
 using Solarnelle.Application.Models.Request.PowerOutput;
 using Solarnelle.Application.Models.Response.PowerOutput;
+using Solarnelle.Application.Services.Validation.PowerOutput;
 using Solarnelle.Domain.Enums;
-using Solarnelle.Domain.Exceptions;
 using Solarnelle.Domain.Interfaces.Repositories;
 using Solarnelle.Domain.Models.DatabaseResults;
 
 namespace Solarnelle.Application.Services.PowerOutput
 {
     public class PowerOutputService(
+        IPowerOutputValidationService powerOutputValidationService,
         IProductionValuesRepository productionValuesRepository,
         IForecastedValuesRepository forecastedValuesRepository) : IPowerOutputService
     {
@@ -16,14 +17,13 @@ namespace Solarnelle.Application.Services.PowerOutput
         {
             List<PowerOutputPerSolarPowerPlantDatabaseResult> databaseResults = [];
 
-            TimeseriesType timeseriesType = ParseTimeseries(request);
-            TimeseriesGranularity granularity = ParseGranularity(request);
+            (TimeseriesType type, TimeseriesGranularity granularity) = powerOutputValidationService.ValidateGetTimeseriesRequest(request);
 
-            databaseResults = timeseriesType switch
+            databaseResults = type switch
             {
                 TimeseriesType.Production => await productionValuesRepository.GetProductionTimeseriesAsync(granularity, request.DateFrom, request.DateTo),
                 TimeseriesType.Forecast => await forecastedValuesRepository.GetForcastedTimeseriesAsync(granularity, request.DateFrom, request.DateTo),
-                _ => throw new NotSupportedException($"Received an unsupported {nameof(GetPowerOutputRequest.TimeseriesType)} value {timeseriesType}."),
+                _ => throw new NotSupportedException($"Received an unsupported {nameof(GetPowerOutputRequest.TimeseriesType)} value: {request.TimeseriesType}."),
             };
 
             if (databaseResults.Count == 0)
@@ -34,30 +34,6 @@ namespace Solarnelle.Application.Services.PowerOutput
             List<GetPowerOutputResponse> powerOutputsResponse = databaseResults.Select(x => x.MapToResponse()).ToList();
 
             return powerOutputsResponse;
-        }
-
-        private static TimeseriesType ParseTimeseries(GetPowerOutputRequest request)
-        {
-            var requestTimeseriesType = request.TimeseriesType.ToLower();
-
-            return requestTimeseriesType switch
-            {
-                "production" => TimeseriesType.Production,
-                "forecast" => TimeseriesType.Forecast,
-                _ => throw new CustomHttpException($"Unsupported {nameof(GetPowerOutputRequest.TimeseriesType)} value provided: {requestTimeseriesType}.", System.Net.HttpStatusCode.BadRequest)
-            };
-        }
-
-        private static TimeseriesGranularity ParseGranularity(GetPowerOutputRequest request)
-        {
-            var requestTimeseriesGranularity = request.Granularity.ToLower();
-
-            return requestTimeseriesGranularity switch
-            {
-                "15 min" => TimeseriesGranularity.FifteenMinutes,
-                "1 hour" => TimeseriesGranularity.OneHour,
-                _ => throw new CustomHttpException($"Unsupported {nameof(GetPowerOutputRequest.Granularity)} value provided: {requestTimeseriesGranularity}.", System.Net.HttpStatusCode.BadRequest)
-            };
         }
     }
 }
