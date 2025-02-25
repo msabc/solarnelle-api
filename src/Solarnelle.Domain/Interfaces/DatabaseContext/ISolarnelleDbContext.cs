@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Solarnelle.Domain.Models.Tables;
 
 namespace Solarnelle.Domain.Interfaces.DatabaseContext
 {
     public interface ISolarnelleDbContext
     {
-        DbSet<User> Users { get; set; }
+        DbSet<IdentityUser> Users { get; set; }
 
         DbSet<SolarPowerPlant> SolarPowerPlants { get; set; }
 

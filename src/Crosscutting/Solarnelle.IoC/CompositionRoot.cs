@@ -2,9 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Solarnelle.Application.Services.Auth;
+using Solarnelle.Application.Services.AccessToken;
 using Solarnelle.Application.Services.PowerOutput;
 using Solarnelle.Application.Services.SolarPowerPlant;
+using Solarnelle.Application.Services.User;
 using Solarnelle.Application.Services.Validation.PowerOutput;
 using Solarnelle.Application.Services.Validation.SolarPowerPlant;
 using Solarnelle.Configuration;
@@ -31,6 +32,7 @@ namespace Solarnelle.IoC
         private static IServiceCollection RegisterSettings(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<DatabaseSettings>(options => configuration.GetSection(nameof(DatabaseSettings)).Bind(options));
+            services.Configure<SolarnelleSettings>(options => configuration.GetSection(nameof(SolarnelleSettings)).Bind(options));
 
             return services;
         }
@@ -70,7 +72,9 @@ namespace Solarnelle.IoC
 
         private static IServiceCollection RegisterApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAccessTokenService, AccessTokenService>();
+
             services.AddScoped<ISolarPowerPlantService, SolarPowerPlantService>();
             services.AddScoped<IPowerOutputService, PowerOutputService>();
 

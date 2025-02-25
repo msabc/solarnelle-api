@@ -1,20 +1,21 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using NLog;
 using NLog.Web;
 using Scalar.AspNetCore;
-using Solarnelle.Api.Authorization;
 using Solarnelle.Api.Filters;
 using Solarnelle.Api.OpenAPI;
-using Solarnelle.Application.Constants;
 using Solarnelle.Configuration;
 using Solarnelle.Infrastructure.DatabaseContext;
 using Solarnelle.IoC;
 
-var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-logger.Debug("Solarnelle is starting...");
+var logger = LogManager.Setup().LoadConfigurationFromFile("NLog.config").GetCurrentClassLogger();
+logger.Debug($"{SolarnelleSettings.ApplicationName} is starting...");
 
 try
 {
@@ -22,8 +23,7 @@ try
 
     builder.Services.AddControllers(options =>
     {
-        var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<ApiExceptionFilterAttribute>>();
-        options.Filters.Add(new ApiExceptionFilterAttribute(logger));
+        options.Filters.Add<ApiExceptionFilterAttribute>();
     });
 
     builder.Services.AddRouting(options =>
@@ -38,6 +38,9 @@ try
 
     builder.Services.RegisterApplicationDependencies(builder.Configuration);
 
+    // Add Authorization
+    builder.Services.AddAuthorization();
+
     // Authentication
     builder.Services.AddAuthentication(options =>
     {
@@ -46,25 +49,46 @@ try
     })
     .AddJwtBearer(options =>
     {
-        string? signingKey = builder.Configuration["SolarnelleSettings:IssuerSigningKey"];
-
-        if (string.IsNullOrWhiteSpace(signingKey))
-            throw new Exception($"Missing required application setting {nameof(SolarnelleSettings.IssuerSigningKey)}.");
-
-        options.TokenValidationParameters = new TokenValidationParameters()
+        using (var scope = builder.Services.BuildServiceProvider().CreateScope())
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey)),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
+            var solarnelleSettings = scope.ServiceProvider.GetRequiredService<IOptions<SolarnelleSettings>>();
+
+            var jwtSettings = solarnelleSettings.Value.JWTSettings;
+
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidIssuer = jwtSettings.Issuer,
+                ValidAudience = jwtSettings.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.IssuerSigningKey))
+            };
+        }
     });
 
-    // Authorization
-    builder.Services.AddSingleton<IAuthorizationHandler, SolarnelleAuthorizationHandler>();
+    // Identity
+    builder.Services
+        .AddIdentityCore<IdentityUser>(options =>
+        {
+            options.User.RequireUniqueEmail = true;
+        })
+        .AddEntityFrameworkStores<SolarnelleDbContext>()
+        .AddDefaultTokenProviders();
 
-    builder.Services.AddAuthorizationBuilder()
-        .AddPolicy(SecurityPolicies.SolarnelleUserIdPolicyName, policy => policy.RequireClaim(SecurityClaims.SolarnelleClaimsPrincipalType));
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.Events.OnRedirectToLogin = context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.CompletedTask;
+        };
+        options.Events.OnRedirectToAccessDenied = context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            return Task.CompletedTask;
+        };
+    });
 
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
@@ -80,7 +104,10 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.MapOpenApi();
-        app.MapScalarApiReference();
+        app.MapScalarApiReference(options =>
+        {
+            options.Theme = ScalarTheme.DeepSpace;
+        });
     }
 
     app.UseHttpsRedirection();
@@ -95,7 +122,7 @@ try
 }
 catch (Exception exception)
 {
-    logger.Error(exception, "Solanelle stopped due to an exception");
+    logger.Error(exception, $"{SolarnelleSettings.ApplicationName} stopped due to an exception: {exception.Message}.");
     throw;
 }
 finally

@@ -1,11 +1,11 @@
-﻿using Solarnelle.Domain.Models.Tables;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace Solarnelle.Domain.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        Task AddAsync(User user);
+        Task AddAsync(IdentityUser user);
 
-        Task<User?> GetAsync(string email);
+        Task<IdentityUser?> GetAsync(string email);
     }
 }

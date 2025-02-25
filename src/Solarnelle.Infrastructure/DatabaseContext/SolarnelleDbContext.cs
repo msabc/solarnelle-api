@@ -1,17 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Solarnelle.Domain.Interfaces.DatabaseContext;
 using Solarnelle.Domain.Models.Tables;
 
 namespace Solarnelle.Infrastructure.DatabaseContext
 {
-    public class SolarnelleDbContext(DbContextOptions<SolarnelleDbContext> options) : DbContext(options), ISolarnelleDbContext
+    public class SolarnelleDbContext(DbContextOptions<SolarnelleDbContext> options) : IdentityDbContext<IdentityUser>(options), ISolarnelleDbContext
     {
         private static readonly int _initalSeedMinPowerOutput = 500;
         private static readonly int _initalSeedMaxPowerOutput = 1500;
         private static readonly int _initalSeedMeasurementCount = 50;
         private static readonly DateTime _initalSeedMeasurementDate = new(2023, 1, 1);
 
-        public DbSet<User> Users { get; set; }
+        public new DbSet<User> Users { get; set; }
 
         public DbSet<SolarPowerPlant> SolarPowerPlants { get; set; }
 
@@ -21,6 +23,8 @@ namespace Solarnelle.Infrastructure.DatabaseContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<User>()
                 .Property(u => u.Enabled)
                 .HasDefaultValue(true);

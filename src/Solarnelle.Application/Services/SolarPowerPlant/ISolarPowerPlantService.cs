@@ -5,7 +5,7 @@ namespace Solarnelle.Application.Services.SolarPowerPlant
 {
     public interface ISolarPowerPlantService
     {
-        Task AddAsync(Guid userId, AddSolarPowerPlantRequest request);
+        Task AddAsync(AddSolarPowerPlantRequest request);
 
         Task<GetSolarPowerPlantsResponse> GetAsync(GetSolarPowerPlantsRequest request);
         

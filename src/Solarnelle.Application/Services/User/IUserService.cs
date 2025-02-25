@@ -1,8 +1,8 @@
 ﻿using Solarnelle.Application.Models.Request.Auth;
 
-namespace Solarnelle.Application.Services.Auth
+namespace Solarnelle.Application.Services.User
 {
-    public interface IAuthService
+    public interface IUserService
     {
         Task<string> SignUpAsync(SignUpRequest request);
 

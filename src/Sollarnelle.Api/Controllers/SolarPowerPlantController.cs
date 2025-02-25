@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Solarnelle.Api.Controllers.Base;
-using Solarnelle.Application.Constants;
 using Solarnelle.Application.Models.Request.SolarPowerPlant;
 using Solarnelle.Application.Services.Security;
 using Solarnelle.Application.Services.SolarPowerPlant;
@@ -9,31 +8,25 @@ using Solarnelle.Application.Services.SolarPowerPlant;
 namespace Solarnelle.Api.Controllers
 {
     [Route("power-plant")]
-    [Authorize(Policy = SecurityPolicies.SolarnelleUserIdPolicyName)]
-    public class SolarPowerPlantController(
-        ICurrentUserService currentUserService, 
-        ISolarPowerPlantService solarPowerPlantService) : SolarnelleBaseController
+    public class SolarPowerPlantController(ISolarPowerPlantService solarPowerPlantService) : SolarnelleBaseController
     {
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateAsync([FromBody] AddSolarPowerPlantRequest request)
         {
-            Guid currentUserId = currentUserService.ResolveCurrentUserId(User);
-
-            await solarPowerPlantService.AddAsync(currentUserId, request);
+            await solarPowerPlantService.AddAsync(request);
 
             return Ok();
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> GetAsync([FromQuery] GetSolarPowerPlantsRequest request)
         {
             return Ok(await solarPowerPlantService.GetAsync(request));
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetByIdAsync([FromQuery] Guid id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             var response = await solarPowerPlantService.GetByIdAsync(id);
 
@@ -44,6 +37,7 @@ namespace Solarnelle.Api.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateSolarPowerPlantRequest request)
         {
             Guid currentUserId = currentUserService.ResolveCurrentUserId(User);
@@ -54,6 +48,7 @@ namespace Solarnelle.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             await solarPowerPlantService.DeleteAsync(id);

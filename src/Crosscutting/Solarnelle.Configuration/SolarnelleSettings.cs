@@ -1,7 +1,11 @@
-﻿namespace Solarnelle.Configuration
+﻿using Solarnelle.Configuration.Models;
+
+namespace Solarnelle.Configuration
 {
     public class SolarnelleSettings
     {
-        public required string IssuerSigningKey { get; set; }
+        public const string ApplicationName = "Solarnelle.Api";
+
+        public required JWTSettingsElement JWTSettings { get; set; }
     }
 }

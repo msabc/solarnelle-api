@@ -1,23 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Solarnelle.Api.Controllers.Base;
 using Solarnelle.Application.Models.Request.Auth;
-using Solarnelle.Application.Services.Auth;
+using Solarnelle.Application.Services.User;
 
 namespace Solarnelle.Api.Controllers
 {
     [Route("[controller]")]
-    public class UserController(IAuthService authService) : SolarnelleBaseController
+    public class UserController(IUserService userService) : SolarnelleBaseController
     {
-        [HttpPost("signup")]
+        [HttpPost("sign-up")]
         public async Task<IActionResult> SignUpAsync([FromBody] SignUpRequest request)
         {
-            return Ok(await authService.SignUpAsync(request));
+            return Ok(await userService.SignUpAsync(request));
         }
 
-        [HttpPost("signin")]
+        [HttpPost("sign-in")]
         public async Task<IActionResult> SignInAsync([FromBody] SignInRequest request)
         {
-            return Ok(await authService.SignInAsync(request));
+            return Ok(await userService.SignInAsync(request));
         }
     }
 }
