@@ -20,6 +20,9 @@ namespace Solarnelle.Application.Services.SolarPowerPlant
 
             AddSolarPowerPlantCommand command = request.MapToCommand();
 
+            command.DateCreated = DateTime.UtcNow;
+            command.DateLastModified = DateTime.UtcNow;
+
             await solarPowerPlantRepository.AddAsync(command);
         }
 
@@ -62,6 +65,8 @@ namespace Solarnelle.Application.Services.SolarPowerPlant
         public async Task UpdateAsync(Guid id, UpdateSolarPowerPlantRequest request)
         {
             UpdateSolarPowerPlantCommand command = request.MapToCommand();
+
+            command.DateLastModified = DateTime.UtcNow;
 
             await solarPowerPlantRepository.UpdateAsync(id, command);
         }

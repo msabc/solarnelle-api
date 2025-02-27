@@ -9,7 +9,7 @@ namespace Solarnelle.Domain.Interfaces.Repositories
 
         Task<SolarPowerPlant?> GetByIdAsync(Guid id);
 
-        Task<IEnumerable<SolarPowerPlant>> GetByFilterAsync(FilterSolarPowerPlantCommand command);
+        Task<List<SolarPowerPlant>> GetByFilterAsync(FilterSolarPowerPlantCommand command);
 
         Task UpdateAsync(Guid id, UpdateSolarPowerPlantCommand command);
 

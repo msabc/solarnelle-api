@@ -67,6 +67,8 @@ namespace Solarnelle.Infrastructure.DatabaseContext
                     Name = "Solar Plant A",
                     InstalledPower = random.Next(_initalSeedMinPowerOutput, _initalSeedMaxPowerOutput),
                     DateOfInstallation = new DateTime(2020, 1, 15),
+                    DateCreated = DateTime.UtcNow,
+                    DateLastModified = DateTime.UtcNow,
                     Latitude = 48.8566m,
                     Longitude = 2.3522m
                 },
@@ -76,6 +78,8 @@ namespace Solarnelle.Infrastructure.DatabaseContext
                     Name = "Solar Plant B",
                     InstalledPower = random.Next(_initalSeedMinPowerOutput, _initalSeedMaxPowerOutput),
                     DateOfInstallation = new DateTime(2021, 5, 23),
+                    DateCreated = DateTime.UtcNow,
+                    DateLastModified = DateTime.UtcNow,
                     Latitude = 52.5200m,
                     Longitude = 13.4050m
                 },
@@ -85,6 +89,8 @@ namespace Solarnelle.Infrastructure.DatabaseContext
                     Name = "Solar Plant C",
                     InstalledPower = random.Next(_initalSeedMinPowerOutput, _initalSeedMaxPowerOutput),
                     DateOfInstallation = new DateTime(2022, 9, 10),
+                    DateCreated = DateTime.UtcNow,
+                    DateLastModified = DateTime.UtcNow,
                     Latitude = 41.9028m,
                     Longitude = 12.4964m
                 },
@@ -94,6 +100,8 @@ namespace Solarnelle.Infrastructure.DatabaseContext
                     Name = "Solar Plant D",
                     InstalledPower = random.Next(_initalSeedMinPowerOutput, _initalSeedMaxPowerOutput),
                     DateOfInstallation = new DateTime(2019, 3, 5),
+                    DateCreated = DateTime.UtcNow,
+                    DateLastModified = DateTime.UtcNow,
                     Latitude = 51.5074m,
                     Longitude = -0.1278m
                 },
@@ -103,6 +111,8 @@ namespace Solarnelle.Infrastructure.DatabaseContext
                     Name = "Solar Plant E",
                     InstalledPower = random.Next(_initalSeedMinPowerOutput, _initalSeedMaxPowerOutput),
                     DateOfInstallation = new DateTime(2023, 11, 25),
+                    DateCreated = DateTime.UtcNow,
+                    DateLastModified = DateTime.UtcNow,
                     Latitude = 40.4168m,
                     Longitude = -3.7038m
                 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Solarnelle.Application.Models.Request.SolarPowerPlant
 {
@@ -16,5 +17,9 @@ namespace Solarnelle.Application.Models.Request.SolarPowerPlant
         [Required(ErrorMessage = "Longitude is a mandatory parameter.")]
         [Range(-180, 180, ErrorMessage = "Longitude parameter value must be between -180 and 180 degrees.")]
         public decimal Longitude { get; set; }
+
+        [Description("Represents the installed power of a solar power plant measured in megawatts (MW).")]
+        [Range(0, double.MaxValue, ErrorMessage = "Installed power value cannot be less than 0.")]
+        public decimal InstalledPower {  get; set; }
     }
 }

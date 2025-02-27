@@ -12,6 +12,9 @@ namespace Solarnelle.Application.Services.Validation.SolarPowerPlant
 
             if (request.DateOfInstallation > DateTime.UtcNow)
                 throw new CustomHttpException("Date of installation cannot be in the future. Please enter a valid date.", System.Net.HttpStatusCode.BadRequest);
+
+            if (request.InstalledPower <= 0)
+                throw new CustomHttpException("Installed power cannot be less than 0. Please enter a value higher than 0.", System.Net.HttpStatusCode.BadRequest);
         }
     }
 }

@@ -13,9 +13,8 @@ namespace Solarnelle.Infrastructure.Repositories
         {
             SolarPowerPlant solarPowerPlant = new()
             {
-                LastModifiedUserId = command.UserId,
-                DateCreated = DateTime.UtcNow,
-                DateLastModified = DateTime.UtcNow,
+                DateCreated = command.DateCreated,
+                DateLastModified = command.DateLastModified,
                 InstalledPower = command.InstalledPower,
                 DateOfInstallation = command.DateOfInstallation,
                 Latitude = command.Latitude,
@@ -38,7 +37,7 @@ namespace Solarnelle.Infrastructure.Repositories
             return solarPowerPlant;
         }
 
-        public async Task<IEnumerable<SolarPowerPlant>> GetByFilterAsync(FilterSolarPowerPlantCommand command)
+        public async Task<List<SolarPowerPlant>> GetByFilterAsync(FilterSolarPowerPlantCommand command)
         {
             var solarPowerPlants = solarnelleDbContext.SolarPowerPlants.AsQueryable();
 
@@ -63,12 +62,11 @@ namespace Solarnelle.Infrastructure.Repositories
             var solarPowerPlant = await solarnelleDbContext.SolarPowerPlants.FindAsync(id) ?? 
                 throw new DatabaseException($"No {nameof(SolarPowerPlant)} entity found with {nameof(id)}: {id}.", nameof(UpdateAsync), nameof(SolarPowerPlantRepository));
             
-            solarPowerPlant.Longitude = command.Longitude;
-            solarPowerPlant.Latitude = command.Latitude;
-            solarPowerPlant.LastModifiedUserId = command.UserId;
             solarPowerPlant.Name = command.Name;
             solarPowerPlant.DateOfInstallation = command.DateOfInstallation;
-            solarPowerPlant.DateLastModified = DateTime.UtcNow;
+            solarPowerPlant.DateLastModified = command.DateLastModified;
+            solarPowerPlant.Longitude = command.Longitude;
+            solarPowerPlant.Latitude = command.Latitude;
 
             await solarnelleDbContext.SaveChangesAsync();
         }
