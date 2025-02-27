@@ -14,11 +14,11 @@ namespace Solarnelle.Application.Services.SolarPowerPlant
         ISolarPowerPlantRepository solarPowerPlantRepository,
         ILogger<SolarPowerPlantService> logger) : ISolarPowerPlantService
     {
-        public async Task AddAsync(Guid userId, AddSolarPowerPlantRequest request)
+        public async Task AddAsync(AddSolarPowerPlantRequest request)
         {
             solarPowerPlantValidationService.ValidateAddRequest(request);
 
-            AddSolarPowerPlantCommand command = request.MapToCommand(userId);
+            AddSolarPowerPlantCommand command = request.MapToCommand();
 
             await solarPowerPlantRepository.AddAsync(command);
         }

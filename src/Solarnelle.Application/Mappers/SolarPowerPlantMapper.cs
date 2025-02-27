@@ -8,7 +8,7 @@ namespace Solarnelle.Application.Mappers
 {
     public static class SolarPowerPlantMapper
     {
-        public static AddSolarPowerPlantCommand MapToCommand(this AddSolarPowerPlantRequest request, Guid userId)
+        public static AddSolarPowerPlantCommand MapToCommand(this AddSolarPowerPlantRequest request)
         {
             return new AddSolarPowerPlantCommand()
             {

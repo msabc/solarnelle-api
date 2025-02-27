@@ -46,9 +46,11 @@ The project features the following technologies:
 
 ## Run the project
 
-> **_Note:_** Solarnelle will create a database if one doesn't exist based on the **SolarnelleConnectionString** setting.
-
 1. Clone the project
 2. Open the solution (**Solarnelle.Api.sln**) in Visual Studio
 3. Set **Solarnelle.Api** as the Startup project
-4. Run the project
+4. Configure necessary settings: 
+    - Solarnelle will create a database if one doesn't exist based on the **SolarnelleConnectionString** setting.
+    - Solarnelle requires a 128 bit key for JWT signature validation based on the **IssuerSigningKey** setting.
+
+5. Run the project

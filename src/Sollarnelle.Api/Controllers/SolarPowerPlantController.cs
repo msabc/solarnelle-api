@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Solarnelle.Api.Controllers.Base;
 using Solarnelle.Application.Models.Request.SolarPowerPlant;
-using Solarnelle.Application.Services.Security;
 using Solarnelle.Application.Services.SolarPowerPlant;
 
 namespace Solarnelle.Api.Controllers
@@ -10,8 +9,8 @@ namespace Solarnelle.Api.Controllers
     [Route("power-plant")]
     public class SolarPowerPlantController(ISolarPowerPlantService solarPowerPlantService) : SolarnelleBaseController
     {
-        [HttpPost]
         [Authorize]
+        [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] AddSolarPowerPlantRequest request)
         {
             await solarPowerPlantService.AddAsync(request);
@@ -36,19 +35,17 @@ namespace Solarnelle.Api.Controllers
             return Ok(response);
         }
 
-        [HttpPut]
         [Authorize]
-        public async Task<IActionResult> UpdateAsync([FromBody] UpdateSolarPowerPlantRequest request)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateSolarPowerPlantRequest request)
         {
-            Guid currentUserId = currentUserService.ResolveCurrentUserId(User);
-
-            await solarPowerPlantService.UpdateAsync(currentUserId, request);
+            await solarPowerPlantService.UpdateAsync(id, request);
 
             return Ok();
         }
 
-        [HttpDelete("{id}")]
         [Authorize]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             await solarPowerPlantService.DeleteAsync(id);
