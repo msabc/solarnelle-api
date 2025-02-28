@@ -33,17 +33,25 @@ namespace Solarnelle.Tests.Unit.Application.Services
         [Fact]
         public async Task GetTimeseriesAsync_FifteenMinutesGranularity_PowerOutputSummationIsNotPerformed()
         {
-            int expectedAmountOfValues = 50;
+            int numberOfPowerPlants = 10;
+            int expectedAmountOfValuesPerPowerPlant = 50;
+            DateTime startingDateTime = new(2021, 1, 1);
+            int numberOfMinutesBetweenEachValue = 15;
 
             var request = new GetPowerOutputRequest()
             {
-                DateFrom = new DateTime(2021, 1, 1),
+                DateFrom = startingDateTime,
                 DateTo = new DateTime(2021, 2, 1),
                 TimeseriesType = "production",
                 Granularity = "15 min"
             };
 
-            SetupPowerOutputValuesMock(10, expectedAmountOfValues, new DateTime(2021, 1, 1));
+            SetupPowerOutputValuesMock(
+                numberOfPowerPlants, 
+                expectedAmountOfValuesPerPowerPlant,
+                startingDateTime, 
+                numberOfMinutesBetweenEachValue
+            );
 
             var response = await _powerOutputService.GetTimeseriesAsync(request);
 
@@ -51,24 +59,32 @@ namespace Solarnelle.Tests.Unit.Application.Services
 
             foreach (var item in response)
             {
-                Assert.Equal(expectedAmountOfValues, item.GeneratedOutputs.Count);
+                Assert.Equal(expectedAmountOfValuesPerPowerPlant, item.GeneratedOutputs.Count);
             }
         }
 
         [Fact]
         public async Task GetTimeseriesAsync_OneHourGranularity_PowerOutputSummationIsPerformed()
         {
-            int expectedAmountOfValues = 50;
+            int numberOfPowerPlants = 1;
+            int expectedAmountOfValuesPerPowerPlant = 50;
+            DateTime startingDateTime = new(2021, 1, 1);
+            int numberOfMinutesBetweenEachValue = 15;
 
             var request = new GetPowerOutputRequest()
             {
-                DateFrom = new DateTime(2021, 1, 1),
+                DateFrom = startingDateTime,
                 DateTo = new DateTime(2021, 2, 1),
                 TimeseriesType = "production",
                 Granularity = "1 hour"
             };
 
-            SetupPowerOutputValuesMock(10, expectedAmountOfValues, new DateTime(2021, 1, 1));
+            SetupPowerOutputValuesMock(
+                numberOfPowerPlants,
+                expectedAmountOfValuesPerPowerPlant,
+                startingDateTime,
+                numberOfMinutesBetweenEachValue
+            );
 
             var response = await _powerOutputService.GetTimeseriesAsync(request);
 
@@ -76,11 +92,15 @@ namespace Solarnelle.Tests.Unit.Application.Services
 
             foreach (var item in response)
             {
-                Assert.Equal(4, item.GeneratedOutputs.Count);
+                Assert.Equal(13, item.GeneratedOutputs.Count);
             }
         }
 
-        private void SetupPowerOutputValuesMock(int numberOfPowerPlants, int numberOfValues, DateTime powerOutputValuesInitialDate)
+        private void SetupPowerOutputValuesMock(
+            int numberOfPowerPlants, 
+            int numberOfValues, 
+            DateTime powerOutputValuesInitialDate, 
+            int numberOfMinutesBetweenEachValue)
         {
             var solarPowerPlants = new List<SolarPowerPlant>();
             var powerOutputDatabaseResults = new List<PowerOutputDatabaseResult>();
@@ -98,13 +118,15 @@ namespace Solarnelle.Tests.Unit.Application.Services
             {
                 for (int i = 0; i < numberOfValues; i++)
                 {
+                    powerOutputValuesInitialDate = powerOutputValuesInitialDate.AddMinutes(numberOfMinutesBetweenEachValue);
+
                     powerOutputDatabaseResults.Add(
                     new PowerOutputDatabaseResult()
                     {
                         Id = Guid.NewGuid(),
                         SolarPowerPlantId = spp.Id,
                         Name = spp.Name,
-                        Date = powerOutputValuesInitialDate.AddMinutes(15),
+                        Date = powerOutputValuesInitialDate,
                         PowerOutput = 10
                     });
                 }
