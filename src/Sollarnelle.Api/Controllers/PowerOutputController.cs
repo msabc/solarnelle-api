@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Solarnelle.Api.Controllers.Base;
-using Solarnelle.Application.Constants;
 using Solarnelle.Application.Models.Request.PowerOutput;
 using Solarnelle.Application.Models.Response.PowerOutput;
 using Solarnelle.Application.Services.PowerOutput;
@@ -9,7 +7,6 @@ using Solarnelle.Application.Services.PowerOutput;
 namespace Solarnelle.Api.Controllers
 {
     [Route("power-output")]
-    [Authorize(Policy = SecurityPolicies.SolarnelleUserIdPolicyName)]
     public class PowerOutputController(IPowerOutputService powerOutputService) : SolarnelleBaseController
     {
         [HttpGet]

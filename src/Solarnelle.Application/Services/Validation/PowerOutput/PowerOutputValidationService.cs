@@ -8,7 +8,7 @@ namespace Solarnelle.Application.Services.Validation.PowerOutput
     {
         public (TimeseriesType, TimeseriesGranularity) ValidateGetTimeseriesRequest(GetPowerOutputRequest request)
         {
-            if (request.DateFrom >= request.DateTo)
+            if (request.DateTo.HasValue && request.DateFrom >= request.DateTo)
                 throw new CustomHttpException($"'Date from' needs to be before 'date to'.", System.Net.HttpStatusCode.BadRequest);
 
             TimeseriesType type = TimeseriesType.Production;

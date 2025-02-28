@@ -8,6 +8,6 @@ namespace Solarnelle.Application.Models.Response.PowerOutput
 
         public string? Name { get; set; }
 
-        public required IEnumerable<PowerOutputResponseItemDto> GeneratedOutputs { get; set; }
+        public required List<PowerOutputResponseItemDto> GeneratedOutputs { get; set; }
     }
 }

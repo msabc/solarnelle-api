@@ -5,6 +5,6 @@ namespace Solarnelle.Application.Services.PowerOutput
 {
     public interface IPowerOutputService
     {
-        Task<IEnumerable<GetPowerOutputResponse>> GetTimeseriesAsync(GetPowerOutputRequest request);
+        Task<List<GetPowerOutputResponse>> GetTimeseriesAsync(GetPowerOutputRequest request);
     }
 }

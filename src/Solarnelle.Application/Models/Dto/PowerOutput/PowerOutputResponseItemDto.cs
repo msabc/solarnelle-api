@@ -2,7 +2,7 @@
 
 namespace Solarnelle.Application.Models.Dto.PowerOutput
 {
-    public class PowerOutputResponseItemDto
+    public record PowerOutputResponseItemDto
     {
         [Description("Date of output. When the type of timeseries is real production, this refers to the measured date. When the type of timeseries is forecasted production, this refers to the date of forecast.")]
         public DateTime Date { get; set; }

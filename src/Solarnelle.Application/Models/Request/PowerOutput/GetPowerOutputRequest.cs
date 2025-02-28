@@ -12,6 +12,6 @@ namespace Solarnelle.Application.Models.Request.PowerOutput
 
         public required DateTime DateFrom { get; set; }
 
-        public required DateTime DateTo { get; set; }
+        public DateTime? DateTo { get; set; }
     }
 }

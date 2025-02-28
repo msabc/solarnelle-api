@@ -5,6 +5,6 @@ namespace Solarnelle.Domain.Interfaces.Repositories
 {
     public interface IProductionValuesRepository
     {
-        Task<List<PowerOutputPerSolarPowerPlantDatabaseResult>> GetProductionTimeseriesAsync(TimeseriesGranularity granularity, DateTime from, DateTime to);
+        Task<List<PowerOutputDatabaseResult>> GetAsync(DateTime dateFrom, DateTime dateTo);
     }
 }

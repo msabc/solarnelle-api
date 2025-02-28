@@ -62,7 +62,6 @@ namespace Solarnelle.IoC
 
         private static IServiceCollection RegisterRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ISolarPowerPlantRepository, SolarPowerPlantRepository>();
             services.AddScoped<IForecastedValuesRepository, ForecastedValuesRepository>();
             services.AddScoped<IProductionValuesRepository, ProductionValuesRepository>();
