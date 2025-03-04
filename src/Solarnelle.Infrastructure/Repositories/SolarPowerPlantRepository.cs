@@ -37,6 +37,11 @@ namespace Solarnelle.Infrastructure.Repositories
             return solarPowerPlant;
         }
 
+        public async Task<List<SolarPowerPlant>> GetAsync()
+        {
+            return await solarnelleDbContext.SolarPowerPlants.ToListAsync();
+        }
+
         public async Task<List<SolarPowerPlant>> GetByFilterAsync(FilterSolarPowerPlantCommand command)
         {
             var solarPowerPlants = solarnelleDbContext.SolarPowerPlants.AsQueryable();

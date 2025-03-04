@@ -1,4 +1,6 @@
-﻿using Solarnelle.Configuration.Models;
+﻿using Solarnelle.Configuration.Models.Auth;
+using Solarnelle.Configuration.Models.Database;
+using Solarnelle.Configuration.Models.External;
 
 namespace Solarnelle.Configuration
 {
@@ -6,6 +8,12 @@ namespace Solarnelle.Configuration
     {
         public const string ApplicationName = "Solarnelle.Api";
 
-        public required JWTSettingsElement JWTSettings { get; set; }
+        public DatabaseSettingsElement DatabaseSettings {  get; set; }
+
+        public JWTSettingsElement JWTSettings { get; set; }
+
+        public OpenMeteoAPISettingsElement OpenMeteoAPISettings { get; set; }
+
+        public int ForecastBackgroundJobExecutionIntervalInMinutes { get; set; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Solarnelle.Application.Services.AccessToken;
 using Solarnelle.Application.Services.PowerOutput;
 using Solarnelle.Application.Services.SolarPowerPlant;
@@ -11,43 +10,44 @@ using Solarnelle.Application.Services.Validation.SolarPowerPlant;
 using Solarnelle.Configuration;
 using Solarnelle.Domain.Interfaces.DatabaseContext;
 using Solarnelle.Domain.Interfaces.Repositories;
+using Solarnelle.Domain.Interfaces.Services;
 using Solarnelle.Infrastructure.DatabaseContext;
 using Solarnelle.Infrastructure.Repositories;
+using Solarnelle.Infrastructure.Services.OpenMeteo;
 
 namespace Solarnelle.IoC
 {
     public static class CompositionRoot
     {
-        public static IServiceCollection RegisterApplicationDependencies(this IServiceCollection services, IConfiguration configuration)
+        public static SolarnelleSettings RegisterApplicationDependencies(this IServiceCollection services, IConfiguration configuration)
         {
-            services.RegisterSettings(configuration)
-                    .RegisterDatabaseConfiguration()
+            var settings = services.RegisterSettings(configuration);
+
+            services.RegisterDatabaseConfiguration(settings)
                     .RegisterDbContext()
                     .RegisterRepositories()
+                    .RegisterHttpClients(settings)
+                    .RegisterInfrastructureServices()
                     .RegisterApplicationServices();
 
-            return services;
+            return settings;
         }
 
-        private static IServiceCollection RegisterSettings(this IServiceCollection services, IConfiguration configuration)
+        private static SolarnelleSettings RegisterSettings(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<DatabaseSettings>(options => configuration.GetSection(nameof(DatabaseSettings)).Bind(options));
             services.Configure<SolarnelleSettings>(options => configuration.GetSection(nameof(SolarnelleSettings)).Bind(options));
 
-            return services;
+            var solarnelleSettings = new SolarnelleSettings();
+            configuration.GetSection(nameof(SolarnelleSettings)).Bind(solarnelleSettings);
+
+            return solarnelleSettings;
         }
 
-        private static IServiceCollection RegisterDatabaseConfiguration(this IServiceCollection services)
+        private static IServiceCollection RegisterDatabaseConfiguration(this IServiceCollection services, SolarnelleSettings settings)
         {
-            ServiceProvider serviceProvider = services.BuildServiceProvider();
-
-            using IServiceScope scope = serviceProvider.CreateScope();
-
-            var databaseSettings = scope.ServiceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value;
-
             services.AddDbContext<SolarnelleDbContext>(options =>
             {
-                options.UseSqlServer(databaseSettings.SolarnelleConnectionString);
+                options.UseSqlServer(settings.DatabaseSettings.SolarnelleConnectionString);
             });
 
             return services;
@@ -65,6 +65,23 @@ namespace Solarnelle.IoC
             services.AddScoped<ISolarPowerPlantRepository, SolarPowerPlantRepository>();
             services.AddScoped<IForecastedValuesRepository, ForecastedValuesRepository>();
             services.AddScoped<IProductionValuesRepository, ProductionValuesRepository>();
+
+            return services;
+        }
+
+        private static IServiceCollection RegisterHttpClients(this IServiceCollection services, SolarnelleSettings solarnelleSettings)
+        {
+            services.AddHttpClient<OpenMeteoWeatherForecastService>(client =>
+            {
+                client.BaseAddress = new Uri(solarnelleSettings.OpenMeteoAPISettings.BaseURL);
+            });
+
+            return services;
+        }
+
+        private static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services)
+        {
+            services.AddScoped<IOpenMeteoWeatherForecastService, OpenMeteoWeatherForecastService>();
 
             return services;
         }

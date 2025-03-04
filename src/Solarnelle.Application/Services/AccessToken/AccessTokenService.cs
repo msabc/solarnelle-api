@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Solarnelle.Application.Constants;
 using Solarnelle.Configuration;
-using Solarnelle.Configuration.Models;
+using Solarnelle.Configuration.Models.Auth;
 
 namespace Solarnelle.Application.Services.AccessToken
 {

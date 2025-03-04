@@ -1,7 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NLog;
 using NLog.Web;
@@ -34,7 +33,7 @@ try
         options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
     });
 
-    builder.Services.RegisterApplicationDependencies(builder.Configuration);
+    var solarnelleSettings = builder.Services.RegisterApplicationDependencies(builder.Configuration);
 
     // Add Authorization
     builder.Services.AddAuthorization();
@@ -47,22 +46,17 @@ try
     })
     .AddJwtBearer(options =>
     {
-        using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+        var jwtSettings = solarnelleSettings.JWTSettings;
+
+        options.TokenValidationParameters = new TokenValidationParameters()
         {
-            var solarnelleSettings = scope.ServiceProvider.GetRequiredService<IOptions<SolarnelleSettings>>();
-
-            var jwtSettings = solarnelleSettings.Value.JWTSettings;
-
-            options.TokenValidationParameters = new TokenValidationParameters()
-            {
-                ValidateIssuerSigningKey = true,
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidIssuer = jwtSettings.Issuer,
-                ValidAudience = jwtSettings.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.IssuerSigningKey))
-            };
-        }
+            ValidateIssuerSigningKey = true,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.IssuerSigningKey))
+        };
     });
 
     // Identity

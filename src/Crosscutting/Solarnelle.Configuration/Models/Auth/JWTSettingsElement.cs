@@ -1,6 +1,6 @@
-﻿namespace Solarnelle.Configuration.Models
+﻿namespace Solarnelle.Configuration.Models.Auth
 {
-    public class JWTSettingsElement
+    public record JWTSettingsElement
     {
         public required string Issuer { get; set; }
 
