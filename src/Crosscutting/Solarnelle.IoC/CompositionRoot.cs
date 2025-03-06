@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Threading;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Solarnelle.Application.Services.AccessToken;
+using Solarnelle.Application.Services.Forecast;
 using Solarnelle.Application.Services.PowerOutput;
 using Solarnelle.Application.Services.SolarPowerPlant;
 using Solarnelle.Application.Services.User;
@@ -11,7 +13,9 @@ using Solarnelle.Configuration;
 using Solarnelle.Domain.Interfaces.DatabaseContext;
 using Solarnelle.Domain.Interfaces.Repositories;
 using Solarnelle.Domain.Interfaces.Services;
+using Solarnelle.Domain.Models.Tables;
 using Solarnelle.Infrastructure.DatabaseContext;
+using Solarnelle.Infrastructure.DataSeeding;
 using Solarnelle.Infrastructure.Repositories;
 using Solarnelle.Infrastructure.Services.OpenMeteo;
 
@@ -47,7 +51,15 @@ namespace Solarnelle.IoC
         {
             services.AddDbContext<SolarnelleDbContext>(options =>
             {
-                options.UseSqlServer(settings.DatabaseSettings.SolarnelleConnectionString);
+                options.UseSqlServer(settings.DatabaseSettings.SolarnelleConnectionString)
+                       .UseSeeding((context, _) =>
+                       {
+                           SolarnelleDatabaseSeeder.SeedDatabaseAsync(context).Wait();
+                       })
+                       .UseAsyncSeeding(async (context, _, cancellationToken) =>
+                       {
+                           await SolarnelleDatabaseSeeder.SeedDatabaseAsync(context);
+                       });
             });
 
             return services;
@@ -65,6 +77,7 @@ namespace Solarnelle.IoC
             services.AddScoped<ISolarPowerPlantRepository, SolarPowerPlantRepository>();
             services.AddScoped<IForecastedValuesRepository, ForecastedValuesRepository>();
             services.AddScoped<IProductionValuesRepository, ProductionValuesRepository>();
+            services.AddScoped<ISolarRadiationForecastRepository, SolarRadiationForecastRepository>();
 
             return services;
         }
@@ -81,7 +94,7 @@ namespace Solarnelle.IoC
 
         private static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services)
         {
-            services.AddScoped<IOpenMeteoWeatherForecastService, OpenMeteoWeatherForecastService>();
+            services.AddTransient<IOpenMeteoWeatherForecastService, OpenMeteoWeatherForecastService>();
 
             return services;
         }
@@ -93,6 +106,8 @@ namespace Solarnelle.IoC
 
             services.AddScoped<ISolarPowerPlantService, SolarPowerPlantService>();
             services.AddScoped<IPowerOutputService, PowerOutputService>();
+            services.AddScoped<ISolarRadiationForecastService, SolarRadiationForecastService>();
+
 
             // validation
             services.AddScoped<ISolarPowerPlantValidationService, SolarPowerPlantValidationService>();

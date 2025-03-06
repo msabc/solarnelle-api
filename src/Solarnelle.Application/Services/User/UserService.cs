@@ -10,17 +10,18 @@ using Solarnelle.Application.Services.AccessToken;
 using Solarnelle.Configuration;
 using Solarnelle.Configuration.Models;
 using Solarnelle.Domain.Exceptions;
+using Solarnelle.Domain.Models.Tables;
 
 namespace Solarnelle.Application.Services.User
 {
     public class UserService(
-        UserManager<IdentityUser> userManager,
+        UserManager<ApplicationUser> userManager,
         IAccessTokenService accessTokenService) : IUserService
     {
 
         public async Task<string> SignUpAsync(SignUpRequest request)
         {
-            var user = new IdentityUser
+            var user = new ApplicationUser
             {
                 UserName = request.Email,
                 Email = request.Email

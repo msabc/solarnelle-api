@@ -6,8 +6,10 @@ using NLog;
 using NLog.Web;
 using Scalar.AspNetCore;
 using Solarnelle.Api.Filters;
+using Solarnelle.Api.Jobs;
 using Solarnelle.Api.OpenAPI;
 using Solarnelle.Configuration;
+using Solarnelle.Domain.Models.Tables;
 using Solarnelle.Infrastructure.DatabaseContext;
 using Solarnelle.IoC;
 
@@ -35,6 +37,9 @@ try
 
     var solarnelleSettings = builder.Services.RegisterApplicationDependencies(builder.Configuration);
 
+    // background jobs
+    builder.Services.AddHostedService<SolarRadiationForecastJob>();
+
     // Add Authorization
     builder.Services.AddAuthorization();
 
@@ -61,7 +66,7 @@ try
 
     // Identity
     builder.Services
-        .AddIdentityCore<IdentityUser>(options =>
+        .AddIdentityCore<ApplicationUser>(options =>
         {
             options.User.RequireUniqueEmail = true;
         })
@@ -86,12 +91,6 @@ try
     builder.Host.UseNLog();
 
     var app = builder.Build();
-
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<SolarnelleDbContext>();
-        dbContext.Database.EnsureCreated();
-    }
 
     if (app.Environment.IsDevelopment())
     {

@@ -4,9 +4,9 @@ using Solarnelle.Domain.Models.DatabaseResults;
 
 namespace Solarnelle.Application.Mappers
 {
-    public static class PowerOutputMapper
+    internal static class PowerOutputMapper
     {
-        public static GetPowerOutputResponse MapToResponse(this PowerOutputPerSolarPowerPlantDatabaseResult result)
+        internal static GetPowerOutputResponse MapToResponse(this PowerOutputPerSolarPowerPlantDatabaseResult result)
         {
             return new GetPowerOutputResponse()
             {
@@ -16,7 +16,7 @@ namespace Solarnelle.Application.Mappers
             };
         }
 
-        private static PowerOutputResponseItemDto MapToDto(this PowerOutputDatabaseResult result)
+        internal static PowerOutputResponseItemDto MapToDto(this PowerOutputDatabaseResult result)
         {
             return new PowerOutputResponseItemDto()
             {

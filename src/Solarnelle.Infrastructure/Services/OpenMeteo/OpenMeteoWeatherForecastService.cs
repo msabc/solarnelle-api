@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using Solarnelle.Configuration;
 using Solarnelle.Domain.Interfaces.Services;
 using Solarnelle.Domain.Models.Services.OpenMeteo;
-using Solarnelle.Domain.Models.Services.WeatherForecast;
 
 namespace Solarnelle.Infrastructure.Services.OpenMeteo
 {
@@ -16,21 +15,25 @@ namespace Solarnelle.Infrastructure.Services.OpenMeteo
     {
         private readonly string WeatherForecastPath = solarnelleOptions.Value.OpenMeteoAPISettings.GetWeatherForecastPath;
 
-        private const string _temperatureAndDailyRadiationQueryValues = "temperature_2m,direct_radiation";
+        private const string TemperatureAndDirectRadiationQueryValues = "temperature_2m,direct_radiation";
 
-        public async Task<OpenMeteoResponse> GetWeatherForecastAsync(OpenMeteoRequest request)
+        public async Task<List<OpenMeteoResponse>> GetWeatherForecastAsync(OpenMeteoRequest request)
         {
             try
             {
+                string latitudes = string.Join(",", request.Locations.Select(x => Math.Round(x.Latitude, 2).ToString()));
+                string longitudes = string.Join(",", request.Locations.Select(x => Math.Round(x.Longitude, 2).ToString()));
+                
                 var queryParameterStringBuilder = new StringBuilder();
-                queryParameterStringBuilder.Append($"{OpenMeteoQueryParameterNames.Latitude}={request.Latitude}&");
-                queryParameterStringBuilder.Append($"{OpenMeteoQueryParameterNames.Longitude}={request.Longitude}&");
-                queryParameterStringBuilder.Append($"{OpenMeteoQueryParameterNames.Hourly}={_temperatureAndDailyRadiationQueryValues}&");
+                
+                queryParameterStringBuilder.Append($"{OpenMeteoQueryParameterNames.Latitude}={latitudes}&");
+                queryParameterStringBuilder.Append($"{OpenMeteoQueryParameterNames.Longitude}={longitudes}&");
+                queryParameterStringBuilder.Append($"{OpenMeteoQueryParameterNames.Hourly}={TemperatureAndDirectRadiationQueryValues}&");
                 queryParameterStringBuilder.Append($"{OpenMeteoQueryParameterNames.ForecastDays}=1");
 
                 string requestUri = $"{WeatherForecastPath}?{queryParameterStringBuilder}";
 
-                var response = await httpClient.GetFromJsonAsync<OpenMeteoResponse>(requestUri);
+                var response = await httpClient.GetFromJsonAsync<List<OpenMeteoResponse>>(requestUri);
 
                 return response!;
             }

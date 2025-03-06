@@ -8,16 +8,17 @@ using Microsoft.IdentityModel.Tokens;
 using Solarnelle.Application.Constants;
 using Solarnelle.Configuration;
 using Solarnelle.Configuration.Models.Auth;
+using Solarnelle.Domain.Models.Tables;
 
 namespace Solarnelle.Application.Services.AccessToken
 {
     public class AccessTokenService(
-        UserManager<IdentityUser> userManager,
+        UserManager<ApplicationUser> userManager,
         IOptions<SolarnelleSettings> solarnelleOptions) : IAccessTokenService
     {
         private readonly JWTSettingsElement _jwtSettings = solarnelleOptions.Value.JWTSettings;
 
-        public async Task<string> CreateAccessTokenAsync(IdentityUser user)
+        public async Task<string> CreateAccessTokenAsync(ApplicationUser user)
         {
             List<Claim> claims =
             [

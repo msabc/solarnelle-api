@@ -6,9 +6,9 @@ using Solarnelle.Domain.Models.Tables;
 
 namespace Solarnelle.Application.Mappers
 {
-    public static class SolarPowerPlantMapper
+    internal static class SolarPowerPlantMapper
     {
-        public static AddSolarPowerPlantCommand MapToCommand(this AddSolarPowerPlantRequest request)
+        internal static AddSolarPowerPlantCommand MapToCommand(this AddSolarPowerPlantRequest request)
         {
             return new AddSolarPowerPlantCommand()
             {
@@ -20,7 +20,7 @@ namespace Solarnelle.Application.Mappers
             };
         }
 
-        public static FilterSolarPowerPlantCommand MapToCommand(this GetSolarPowerPlantsRequest request)
+        internal static FilterSolarPowerPlantCommand MapToCommand(this GetSolarPowerPlantsRequest request)
         {
             return new FilterSolarPowerPlantCommand()
             {
@@ -31,7 +31,7 @@ namespace Solarnelle.Application.Mappers
             };
         }
 
-        public static UpdateSolarPowerPlantCommand MapToCommand(this UpdateSolarPowerPlantRequest request)
+        internal static UpdateSolarPowerPlantCommand MapToCommand(this UpdateSolarPowerPlantRequest request)
         {
             return new UpdateSolarPowerPlantCommand()
             {
@@ -42,7 +42,7 @@ namespace Solarnelle.Application.Mappers
             };
         }
 
-        public static GetSolarPowerPlantResponseDto MapToDto(this SolarPowerPlant solarPowerPlant)
+        internal static GetSolarPowerPlantResponseDto MapToDto(this SolarPowerPlant solarPowerPlant)
         {
             return new GetSolarPowerPlantResponseDto()
             {
@@ -54,7 +54,7 @@ namespace Solarnelle.Application.Mappers
             };
         }
 
-        public static GetSolarPowerPlantByIdResponse MapToResponse(this SolarPowerPlant solarPowerPlant)
+        internal static GetSolarPowerPlantByIdResponse MapToResponse(this SolarPowerPlant solarPowerPlant)
         {
             return new GetSolarPowerPlantByIdResponse()
             {

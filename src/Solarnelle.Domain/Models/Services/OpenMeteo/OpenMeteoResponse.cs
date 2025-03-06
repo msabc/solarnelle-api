@@ -8,6 +8,6 @@ namespace Solarnelle.Domain.Models.Services.OpenMeteo
 
         public required decimal Longitude { get; set; }
 
-        public required OpenMeteoHourlyDto Hourly { get; set; }
+        public required OpenMeteoHourlyResponseDto Hourly { get; set; }
     }
 }

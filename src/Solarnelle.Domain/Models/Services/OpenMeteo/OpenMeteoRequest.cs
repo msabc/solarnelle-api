@@ -1,9 +1,9 @@
-﻿namespace Solarnelle.Domain.Models.Services.WeatherForecast
-{
-    public record OpenMeteoRequest
-    {
-        public decimal Latitude { get; set; }
+﻿using Solarnelle.Domain.Models.Services.OpenMeteo.Dto;
 
-        public decimal Longitude { get; set; }
+namespace Solarnelle.Domain.Models.Services.OpenMeteo
+{
+    public class OpenMeteoRequest
+    {
+        public required List<OpenMeteoLocationRequestDto> Locations { get; set; }
     }
 }

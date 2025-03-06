@@ -1,4 +1,5 @@
 ﻿using Solarnelle.Configuration.Models.Auth;
+using Solarnelle.Configuration.Models.BackgroundJobs;
 using Solarnelle.Configuration.Models.Database;
 using Solarnelle.Configuration.Models.External;
 
@@ -14,6 +15,6 @@ namespace Solarnelle.Configuration
 
         public OpenMeteoAPISettingsElement OpenMeteoAPISettings { get; set; }
 
-        public int ForecastBackgroundJobExecutionIntervalInMinutes { get; set; }
+        public SolarRadiationForecastJobSettingsElement SolarRadiationForecastJobSettings { get; set; }
     }
 }

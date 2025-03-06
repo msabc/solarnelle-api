@@ -1,13 +1,13 @@
 ﻿namespace Solarnelle.Domain.Models.Tables
 {
-    public class ProductionValues
+    public class SolarRadiationForecast
     {
         public Guid Id { get; set; }
 
         public Guid SolarPowerPlantId { get; set; }
 
-        public DateTime MeasuredDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
-        public decimal PowerOutput { get; set; }
+        public float Radiation { get; set; }
     }
 }

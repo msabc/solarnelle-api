@@ -1,6 +1,6 @@
 ﻿namespace Solarnelle.Domain.Models.Tables
 {
-    public class ForecastedValues
+    public class ForecastedValue
     {
         public Guid Id { get; set; }
 
