@@ -52,5 +52,18 @@ The project features the following technologies:
 4. Configure necessary settings: 
     - Solarnelle will create a database if one doesn't exist based on the **SolarnelleConnectionString** setting.
     - Solarnelle requires a 128 bit key for JWT signature validation based on the **IssuerSigningKey** setting.
+5. Apply the migrations 
+6. Run the project
 
-5. Run the project
+## Migrations
+
+This section exists because Solarnelle uses multiple projects so applying migrations may not be as intuitive.
+
+If this is your first time using migrations, check out [the docs](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=vs). 
+
+In order to apply migrations, follow these steps: 
+
+1. Set **Solarnelle.Api** as your Startup project
+2. Open Package Manager Console (PMC)
+3. Set **Solarnelle.Infrastructure** as your Default project within PMC
+4. Run the 'Update-Database' command
