@@ -1,7 +1,7 @@
-﻿using System.Threading;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Polly.Extensions.Http;
 using Solarnelle.Application.Services.AccessToken;
 using Solarnelle.Application.Services.Forecast;
 using Solarnelle.Application.Services.PowerOutput;
@@ -13,7 +13,6 @@ using Solarnelle.Configuration;
 using Solarnelle.Domain.Interfaces.DatabaseContext;
 using Solarnelle.Domain.Interfaces.Repositories;
 using Solarnelle.Domain.Interfaces.Services;
-using Solarnelle.Domain.Models.Tables;
 using Solarnelle.Infrastructure.DatabaseContext;
 using Solarnelle.Infrastructure.DataSeeding;
 using Solarnelle.Infrastructure.Repositories;
@@ -31,7 +30,6 @@ namespace Solarnelle.IoC
                     .RegisterDbContext()
                     .RegisterRepositories()
                     .RegisterHttpClients(settings)
-                    .RegisterInfrastructureServices()
                     .RegisterApplicationServices();
 
             return settings;
@@ -49,6 +47,9 @@ namespace Solarnelle.IoC
 
         private static IServiceCollection RegisterDatabaseConfiguration(this IServiceCollection services, SolarnelleSettings settings)
         {
+            if (string.IsNullOrEmpty(settings.DatabaseSettings.SolarnelleConnectionString))
+                throw new ArgumentNullException(nameof(settings));
+
             services.AddDbContext<SolarnelleDbContext>(options =>
             {
                 options.UseSqlServer(settings.DatabaseSettings.SolarnelleConnectionString)
@@ -82,19 +83,16 @@ namespace Solarnelle.IoC
             return services;
         }
 
-        private static IServiceCollection RegisterHttpClients(this IServiceCollection services, SolarnelleSettings solarnelleSettings)
+        private static IServiceCollection RegisterHttpClients(this IServiceCollection services, SolarnelleSettings settings)
         {
-            services.AddHttpClient<OpenMeteoWeatherForecastService>(client =>
+            if (string.IsNullOrEmpty(settings.OpenMeteoAPISettings.BaseURL) ||
+                string.IsNullOrEmpty(settings.OpenMeteoAPISettings.GetWeatherForecastPath))
+                throw new ArgumentNullException(nameof(settings));
+
+            services.AddHttpClient<IOpenMeteoWeatherForecastService, OpenMeteoWeatherForecastService>(client =>
             {
-                client.BaseAddress = new Uri(solarnelleSettings.OpenMeteoAPISettings.BaseURL);
+                client.BaseAddress = new Uri(settings.OpenMeteoAPISettings.BaseURL);
             });
-
-            return services;
-        }
-
-        private static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services)
-        {
-            services.AddTransient<IOpenMeteoWeatherForecastService, OpenMeteoWeatherForecastService>();
 
             return services;
         }

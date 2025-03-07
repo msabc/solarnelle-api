@@ -13,7 +13,7 @@ namespace Solarnelle.Api.Jobs
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            logger.LogInformation($"{nameof(SolarRadiationForecastJob)} is starting.");
+            logger.LogInformation($"{nameof(SolarRadiationForecastJob)} is starting at {DateTime.UtcNow}.");
 
             using PeriodicTimer timer = new(TimeSpan.FromHours(IntervalInHours));
 
@@ -26,13 +26,13 @@ namespace Solarnelle.Api.Jobs
             }
             catch (OperationCanceledException)
             {
-                logger.LogInformation("Timed Hosted Service is stopping.");
+                logger.LogInformation($"{nameof(SolarRadiationForecastJob)} is stopping at {DateTime.UtcNow}.");
             }
         }
 
         private async Task ExecuteSolarRadiationForecastJobAsync()
         {
-            logger.LogInformation($"{nameof(SolarRadiationForecastJob)} interval triggered at {DateTime.UtcNow}.");
+            logger.LogInformation($"{nameof(ExecuteSolarRadiationForecastJobAsync)} execution triggered at {DateTime.UtcNow}.");
 
             try
             {
@@ -44,7 +44,7 @@ namespace Solarnelle.Api.Jobs
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error executing {nameof(SolarRadiationForecastJob)}. {ex.Message} {ex.InnerException?.Message}");
+                logger.LogError(ex, $"Error executing {nameof(SolarRadiationForecastJob)}.{nameof(ExecuteSolarRadiationForecastJobAsync)}: {ex.Message} {ex.InnerException?.Message}");
             }
         }
     }
